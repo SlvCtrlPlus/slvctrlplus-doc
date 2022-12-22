@@ -54,8 +54,8 @@ server {
 	server_name _;
 
 	location / {
-    include  /etc/nginx/mime.types;
-    index index.html;
+		include  /etc/nginx/mime.types;
+		index index.html;
 
 		try_files $uri $uri/ /index.html;
 	}
