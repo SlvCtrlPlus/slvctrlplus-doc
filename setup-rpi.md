@@ -5,14 +5,16 @@
 $ sudo apt-get update && apt-get upgrade
 $ sudo apt-get install nginx git
 $ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
-$ sudo nvm install 18 && nvm use 18
+$ nvm install 18 && nvm use 18
+$ npm install --global yarn
+$ yarn global add pm2
 ```
 
 ## Optional: Disable Bluetooth
 It can be that SlvCtrl+ has a memory leak. This is caused by the Serialport library used for the communication with the components on certain Raspberry Pi models. To prevent the memory leak, Bluetooth needs to be disabled on the Raspberry Pi:
 
 ```bash
-echo "dtoverlay=disable-bt" >> /boot/config.txt
+sudo echo "dtoverlay=disable-bt" >> /boot/config.txt
 ```
 
 ## Download source code
@@ -29,8 +31,6 @@ $ sudo yarn install && yarn run build
 ```
 
 ## Transpile frontend
-⚠️ You need to replace all occurences of `http://localhost:1337` with the local IP of your Raspberry Pi as it's currently not configurable.
-
 ```bash
 $ cd /usr/share/slvctrlplus-frontend
 $ sudo yarn install && yarn run build
