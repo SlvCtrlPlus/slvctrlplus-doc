@@ -1,4 +1,4 @@
-# Setting up SlvCtrl+ on a RPi
+# Setting up SlvCtrl+ on a Raspberry Pi
 
 ## Prepare the system
 ```bash
