@@ -19,6 +19,7 @@ echo "dtoverlay=disable-bt" >> /boot/config.txt
 ```bash
 $ sudo git clone https://github.com/SlvCtrlPlus/slvctrlplus-frontend.git /usr/share
 $ sudo git clone https://github.com/SlvCtrlPlus/slvctrlplus-server.git /usr/share
+$ # Optional: Switch to the branch you want to use
 ```
 
 ## Compile server
@@ -37,4 +38,30 @@ $ sudo yarn install && yarn run build
 todo
 
 ## Setup pm2
-todo
+Create the app config:
+
+```bash
+$ sudo mkdir -p /etc/pm2
+$ sudo vim /etc/pm2/apps.config.js
+```
+
+Config file content:
+```js
+module.exports = {
+  apps : [
+      {
+        name: "slvctrlplus-server",
+        script: "/usr/share/slvctrlplus-server/dist/index.js",
+        env: {
+          "PORT": 1337,
+        }
+      }
+  ]
+}
+```
+
+Set pm2 to start on boot:
+```bash
+$ sudo pm2 startup
+$ sudo pm2 start /etc/pm2/apps.config.js
+```
