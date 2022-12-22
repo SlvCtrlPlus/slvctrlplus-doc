@@ -11,6 +11,14 @@ $ npm install --global yarn
 $ yarn global add pm2
 ```
 
+Make sure Serial Port is enabled:
+
+```bash
+$ sudo raspi-config
+```
+
+Select `3 Interface Options`, then `I6 Serial Port` and make sure to enable it (`Yes`).
+
 ## Optional: Disable Bluetooth
 It can be that SlvCtrl+ has a memory leak. This is caused by the Serialport library used for the communication with the components on certain Raspberry Pi models. To prevent the memory leak, Bluetooth needs to be disabled on the Raspberry Pi:
 
