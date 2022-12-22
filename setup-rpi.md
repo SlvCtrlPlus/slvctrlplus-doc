@@ -29,6 +29,8 @@ $ sudo yarn install && yarn run build
 ```
 
 ## Transpile frontend
+⚠️ You need to replace all occurences of `http://localhost:1337` with the local IP of your Raspberry Pi as it's currently not configurable.
+
 ```bash
 $ cd /usr/share/slvctrlplus-frontend
 $ sudo yarn install && yarn run build
