@@ -5,6 +5,7 @@
 $ sudo apt-get update && apt-get upgrade
 $ sudo apt-get install nginx git
 $ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
+$ source ~/.bashrc
 $ nvm install 18 && nvm use 18
 $ npm install --global yarn
 $ yarn global add pm2
