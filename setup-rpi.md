@@ -8,7 +8,7 @@ $ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
 $ sudo nvm install 18 && nvm use 18
 ```
 
-## Optional: disable Bluetooth
+## Optional: Disable Bluetooth
 It can be that SlvCtrl+ has a memory leak. This is caused by the Serialport library used for the communication with the components on certain Raspberry Pi models. To prevent the memory leak, Bluetooth needs to be disabled on the Raspberry Pi:
 
 ```bash
@@ -22,20 +22,45 @@ $ sudo git clone https://github.com/SlvCtrlPlus/slvctrlplus-server.git /usr/shar
 $ # Optional: Switch to the branch you want to use
 ```
 
-## Compile server
+## Transpile server
 ```bash
 $ cd /usr/share/slvctrlplus-server
 $ sudo yarn install && yarn run build
 ```
 
-## Compile frontend
+## Transpile frontend
 ```bash
 $ cd /usr/share/slvctrlplus-frontend
 $ sudo yarn install && yarn run build
 ```
 
 ## Setup nginx
-todo
+```bash
+$ sudo vim /etc/nginx/sites-available/default
+```
+
+File content:
+
+```
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /usr/share/slvctrlplus-frontend/dist/;
+
+	# Add index.php to the list if you are using PHP
+	index index.html index.htm index.nginx-debian.html;
+
+	server_name _;
+
+	location / {
+    include  /etc/nginx/mime.types;
+    index index.html;
+
+		try_files $uri $uri/ /index.html;
+	}
+}
+```
 
 ## Setup pm2
 Create the app config:
