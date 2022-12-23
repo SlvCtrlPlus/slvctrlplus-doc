@@ -36,7 +36,7 @@ $ # Optional: Switch to the branch you want to use
 ## Transpile server
 ```bash
 $ cd /usr/share/slvctrlplus-server
-$ sudo yarn install && yarn run build
+$ sudo tsc
 ```
 
 ## Transpile frontend
