@@ -4,6 +4,12 @@
 ### Command separation
 The commands and their responses always need to be separated by a new line (`\n`).
 
+### Parameter separation
+A command's parameters are separated by a space:
+```
+set-flow 50 100
+```
+
 ## Commands
 ### Command `introduce`
 This is the first command the server sends to the component once it established a successful serial connection.
@@ -61,7 +67,7 @@ property/value list: `custom-command,param1,param2,operation:successful`.
 <-- air_valve,10223\n
 --> status\n
 <-- status,flow:100\n
---> set-flow,50\n
+--> set-flow 50\n
 <-- set-flow,50,operation:successful\n
 --> get-current-flow\n
 <-- get-current-flow,flow:50\n

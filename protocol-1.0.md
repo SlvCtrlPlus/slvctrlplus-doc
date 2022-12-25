@@ -6,6 +6,13 @@
 ### Command separation
 The commands and their responses always need to be separated by a new line (`\n`).
 
+
+### Parameter separation
+A command's parameters are separated by a space:
+```
+set-flow 50 100
+```
+
 ## Commands
 ### Command `introduce`
 This is the first command the server sends to the component once it established a successful serial connection.
@@ -108,7 +115,7 @@ The response of a get command should return the command name and the current val
 <-- attributes;flow:rw[0-100],pressure:ro[10-20]
 --> status\n
 <-- status;flow:100\n
---> set-flow,50\n
+--> set-flow 50\n
 <-- set-flow,50;operation:successful\n
 --> get-flow\n
 <-- get-flow;50\n
