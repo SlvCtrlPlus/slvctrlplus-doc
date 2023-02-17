@@ -4,11 +4,11 @@
 
 ## General
 ### Command separation
-The commands and their responses always need to be separated by a new line (`\n`).
+The commands and their responses always MUST be separated by a new line (`\n`).
 
 
 ### Parameter separation
-A command's parameters are separated by a space:
+A command's parameters MUST be separated by a space:
 ```
 set-flow 50 100
 ```
@@ -16,7 +16,7 @@ set-flow 50 100
 ## Commands
 ### Command `introduce`
 This is the first command the server sends to the component once it established a successful serial connection.
-The component needs to answer this command with some basic information about itself. (See *Response* section)
+The component MUST answer this command with some basic information about itself. (See *Response* section)
 
 #### Request
 No parameters
@@ -31,13 +31,13 @@ Example:
 introduce;air_valve,10223,10000
 ```
 
-The number `10223` will be read as `1.2.23`.
-The number `10000` will be read as `1.0.0`.
+The number `10223` MUST be read as `1.2.23`.
+The number `10000` MUST be read as `1.0.0`.
 
 ### Command `attributes`
 Returns a list of attributes this component offers for read and/or write.
 
-The attribute names should only contain lower case letters a-z, numbers and dashes and should have at least the length
+The attribute names MUST only contain lower case letters a-z, numbers and dashes and MUST have at least the length
 of 1 (`^[a-z0-9-]+$`).
 
 ### Request
@@ -71,7 +71,7 @@ attributes;flow:rw[0-100],pressure:ro[10-20]
 | Range   | A range | `0-100` (of either integer or float) |
 
 ### Command `status`
-Returns the current status of the component. It returns a comma separated list with all attributes and their values.
+Returns the current status of the component. It MUST return a comma separated list with all attributes and their values.
 
 #### Request
 No parameters
@@ -87,13 +87,13 @@ status;flow:55
 ```
 
 ### Attribute commands `get-...` and `set-...`
-The component needs to implement a command to get a value and/or write a value for each attribute.
+The component MUST implement a command to get a value and/or write a value for each attribute.
 
-The command names should either start with `get-` or `set-` depending on whether they read or write the attribute.
+The command names MUST either start with `get-` or `set-` depending on whether they read or write the attribute.
 
-Parameters can be provided as a space separated list: `set-flow 20`.
+Parameters MUST be provided as a space separated list: `set-flow 20`.
 
-The response of a set command should always contain the command name plus all its parameters with an additional 
+The response of a set command MUST always contain the command name plus all its parameters with an additional 
 property/value list which has to at least contain a `status` about the set command: `set-flow;20;status:successful`.
 
 #### Possible states
@@ -103,10 +103,11 @@ property/value list which has to at least contain a `status` about the set comma
 | `failed`     | Setting the value failed |
 | `unknown`    | Currently it's unknown whether setting the value was successful or not |
 
-If state is `failed` or `unknown` an additional `reason` field MAY bet set with additional info.
+If state is `failed` or `unknown` an additional `reason` field MAY bet set with more detailed info (error code, etc).
 
 #### Response
-The response of a get command should return the command name and the current value: 
+The response of a get command MUST return the command name and the current value. If there are multiple values they
+MUST be separated by a comma.
 
 Example:
 ```
