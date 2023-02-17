@@ -28,10 +28,11 @@ introduce;{device type: string},{firmware version: int},{protocol version: int}
 
 Example: 
 ```
-introduce;air_valve,10223,1
+introduce;air_valve,10223,10000
 ```
 
 The number `10223` will be read as `1.2.23`.
+The number `10000` will be read as `1.0.0`.
 
 ### Command `attributes`
 Returns a list of attributes this component offers for read and/or write.
@@ -90,10 +91,10 @@ The component needs to implement a command to get a value and/or write a value f
 
 The command names should either start with `get-` or `set-` depending on whether they read or write the attribute.
 
-Parameters can be provided as a comma separated list: `set-flow,20`.
+Parameters can be provided as a space separated list: `set-flow 20`.
 
 The response of a set command should always contain the command name plus all its parameters with an additional 
-property/value list which has to at least contain a status about the set command: `set-flow,20;status:successful`.
+property/value list which has to at least contain a `status` about the set command: `set-flow;20;status:successful`.
 
 #### Possible states
 | State  | Description |
@@ -102,7 +103,15 @@ property/value list which has to at least contain a status about the set command
 | `failed`     | Setting the value failed |
 | `unknown`    | Currently it's unknown whether setting the value was successful or not |
 
-The response of a get command should return the command name and the current value: `get-flow;50`
+If state is `failed` or `unknown` an additional `reason` field MAY bet set with additional info.
+
+#### Response
+The response of a get command should return the command name and the current value: 
+
+Example:
+```
+get-flow;50
+```
 
 ## Complete example
 * `-->` describes input the server sends to the component
@@ -116,7 +125,9 @@ The response of a get command should return the command name and the current val
 --> status\n
 <-- status;flow:100\n
 --> set-flow 50\n
-<-- set-flow,50;operation:successful\n
+<-- set-flow;300;status:failed,reason:value_out_of_range\n
+--> set-flow 50\n
+<-- set-flow;50;status:successful\n
 --> get-flow\n
 <-- get-flow;50\n
 ```
