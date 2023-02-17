@@ -72,6 +72,7 @@ attributes;flow:rw[0-100],pressure:ro[10-20]
 
 ### Command `status`
 Returns the current status of the component. It MUST return a comma separated list with all attributes and their values.
+If a value cannot be determined at the moment it MUST be omitted.
 
 #### Request
 No parameters
@@ -84,6 +85,11 @@ status[;{attribute name 1}:{value 1},{attribute name 2}:{value 2},...]
 Example:
 ```
 status;flow:55
+```
+
+Example in case value cannot be determined at the moment:
+```
+status;flow:
 ```
 
 ### Attribute commands `get-...` and `set-...`
@@ -107,11 +113,16 @@ If state is `failed` or `unknown` an additional `reason` field MAY bet set with 
 
 #### Response
 The response of a get command MUST return the command name and the current value. If there are multiple values they
-MUST be separated by a comma.
+MUST be separated by a comma. If the value cannot be determined the value list MUST be empty.
 
-Example:
+Example in case of success:
 ```
-get-flow;50
+get-flow;50;status:success
+```
+
+Example if value cannot be determined at the moment:
+```
+get-flow;;status:unknown,reason:in_motion
 ```
 
 ## Complete example
