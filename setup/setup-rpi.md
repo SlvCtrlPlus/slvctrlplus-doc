@@ -101,3 +101,22 @@ Set pm2 to start on boot:
 $ sudo pm2 startup
 $ sudo pm2 start /etc/pm2/apps.config.js
 ```
+
+## Update script
+This is a script that can be run to update server and frontend component once they were set up like described above. 
+All manual changes that were made will be reset by this script.
+
+```bash
+#!/bin/bash
+
+echo "=> Update backend..."
+(cd /usr/share/slvctrlplus-server && git reset --hard && git pull && rm -rf node_module/ && yarn install && tsc)
+
+echo "=> Update frontend..."
+(cd /usr/share/slvctrlplus-frontend && git reset --hard && git pull && rm -rf node_module/ && yarn install && yarn run build)
+
+echo "=> Restart server..."
+pm2 restart slvctrlplus-server
+
+echo "=> Done!"
+```
