@@ -85,13 +85,15 @@ This script uses the `context` variable to store a counter that increases for ev
 prints out the counter. It is persistent between script executions during a single run.
 
 ```javascript
-// Initialize counter and inStroke variable in context
+// Initialize context with counter property
 if (!('init' in context)) {
     context.init = true;
     context.counter = 0;
 }
 
+// Increase counter property of context
 context.counter++;
 
+// Log current counter value to console
 console.log(context.counter);
 ```
