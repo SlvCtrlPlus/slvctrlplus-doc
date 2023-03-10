@@ -26,7 +26,7 @@ It can be that SlvCtrl+ has a memory leak. This is caused by the Serialport libr
 sudo echo "dtoverlay=disable-bt" >> /boot/config.txt
 ```
 
-## Option 1: Use prebuilt version
+## Option 1: Use prebuilt version (recommended)
 ```bash
 #!/bin/bash
 
