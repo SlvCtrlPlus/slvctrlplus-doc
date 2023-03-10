@@ -45,3 +45,53 @@ if ("deviceUpdateReceived" !== event.type) {
 
 console.log("deviceUpdateReceived")
 ```
+
+### Device selection
+This script logs the string "this is the device you are looking for" everytime an event gets fired for the device with 
+the id "filtered-device-uuid".
+```javascript
+if ("filtered-device-uuid" !== event.device.getDeviceId) {
+    return;
+}
+
+console.log("this is the device you are looking for")
+```
+
+### Write/access attribute of a device
+This script logs the string "Example attribute's value is: ..." everytime an event gets fired for the device with
+the id "filtered-device-uuid" and the value "new value" is written to the `example` attribute of the device.
+```javascript
+if ("filtered-device-uuid" !== event.device.getDeviceId) {
+    return;
+}
+
+const exampleAttribute = event.device.getAttribute('example');
+
+console.log("Example attribute's value is: " + exampleAttribute);
+
+event.device.setAttribute('example', 'new value');
+```
+
+### Access different devices
+This script logs the uuid of a specifically selected device everytime an event gets fired for any device.
+```javascript
+const otherDevice = devices.getById('this-other-device-uuid');
+
+console.log(otherDevice.deviceId);
+```
+
+### Usage of context
+This script uses the `context` variable to store a counter that increases for every event fired by any device. And
+prints out the counter. It is persistent between script executions during a single run.
+
+```javascript
+// Initialize counter and inStroke variable in context
+if (!('init' in context)) {
+    context.init = true;
+    context.counter = 0;
+}
+
+context.counter++;
+
+console.log(context.counter);
+```
