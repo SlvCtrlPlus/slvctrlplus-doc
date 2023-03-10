@@ -6,7 +6,7 @@ $ sudo apt-get update && apt-get upgrade
 $ sudo apt-get install nginx git
 $ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
 $ source ~/.bashrc
-$ nvm install 18 && nvm use 18
+$ nvm install 18 && nvm alias default node && nvm use 18
 $ npm install --global yarn
 $ yarn global add pm2
 ```
@@ -26,20 +26,35 @@ It can be that SlvCtrl+ has a memory leak. This is caused by the Serialport libr
 sudo echo "dtoverlay=disable-bt" >> /boot/config.txt
 ```
 
-## Download source code
+## Option 1: Use prebuilt version
+```bash
+#!/bin/bash
+
+echo "=> Install backend..."
+(DIR=/usr/share/slvctrlplus-server && mkdir -p $DIR && cd $DIR && wget -cq https://github.com/SlvCtrlPlus/slvctrlplus-server/releases/latest/download/dist.tar.gz -O - | tar -xz)
+
+echo "=> Install frontend..."
+
+(DIR=/usr/share/slvctrlplus-frontend && mkdir -p $DIR && cd $DIR && wget -cq https://github.com/SlvCtrlPlus/slvctrlplus-frontend/releases/latest/download/dist.tar.gz -O - | tar -xz)
+
+echo "=> Done!"
+```
+
+## Option 2: Build from source
+### Download source code
 ```bash
 $ sudo git clone https://github.com/SlvCtrlPlus/slvctrlplus-frontend.git /usr/share
 $ sudo git clone https://github.com/SlvCtrlPlus/slvctrlplus-server.git /usr/share
 $ # Optional: Switch to the branch you want to use
 ```
 
-## Transpile server
+### Transpile server
 ```bash
 $ cd /usr/share/slvctrlplus-server
 $ sudo tsc
 ```
 
-## Transpile frontend
+### Transpile frontend
 ```bash
 $ cd /usr/share/slvctrlplus-frontend
 $ sudo yarn install && yarn run build
@@ -103,6 +118,28 @@ $ sudo pm2 start /etc/pm2/apps.config.js
 ```
 
 ## Update script
+These are pre-baked scripts you can save into your home directory as `update-slvctrlplus.sh` and run them with the 
+command `sudo  ./update-slvctrlplus.sh`.
+
+### Option 1: Prebuilt version
+This update to the latest release using the prebuilt versions.
+
+```bash
+#!/bin/bash
+
+echo "=> Update backend..."
+(cd /usr/share/slvctrlplus-server && wget -cq https://github.com/SlvCtrlPlus/slvctrlplus-server/releases/latest/download/dist.tar.gz -O - | tar -xz)
+
+echo "=> Update frontend..."
+(cd /usr/share/slvctrlplus-frontend && wget -cq https://github.com/SlvCtrlPlus/slvctrlplus-frontend/releases/latest/download/dist.tar.gz -O - | tar -xz)
+
+echo "=> Restart server..."
+pm2 restart slvctrlplus-server
+
+echo "=> Done!"
+```
+
+### Option 2: Build from source
 This is a script that can be run to update server and frontend component once they were set up like described above. 
 All manual changes that were made will be reset by this script.
 
