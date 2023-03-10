@@ -22,8 +22,8 @@ The script will be triggered on each occurrence of one of the following events:
 
 ## Available variables
 
-|| Variable || Description ||
-|-----------|---------------|
+|  Variable | Description |
+|-----------|-------------|
 | `event` | Provides information about the event that triggered the script execution. `event.type` contains the name of the event and `event.device` contains the device instance that triggered the event. |
 | `devices` | Provides access to all connected devices. `device.getDeviceById('device-uuid')` will return the device instance if it's connected or `null` if no device with such id was found. |
 | `context` | Provides a simple key-value storage object which is persistent across all script invocations during a single run. Key can be chosen freely. |
