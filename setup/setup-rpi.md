@@ -127,11 +127,23 @@ This update to the latest release using the prebuilt versions.
 ```bash
 #!/bin/bash
 
-echo "=> Update backend..."
-(cd /usr/share/slvctrlplus-server && wget -cq https://github.com/SlvCtrlPlus/slvctrlplus-server/releases/latest/download/dist.tar.gz -O - | tar -xz)
+get_latest_release() {
+  curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
+    grep '"tag_name":' |                                            # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+}
 
-echo "=> Update frontend..."
-(cd /usr/share/slvctrlplus-frontend && wget -cq https://github.com/SlvCtrlPlus/slvctrlplus-frontend/releases/latest/download/dist.tar.gz -O - | tar -xz)
+BACKEND_REPO=SlvCtrlPlus/slvctrlplus-server
+BACKEND_DIR=/usr/share/slvctrlplus-server
+BACKEND_VERSION=$(get_latest_release $BACKEND_REPO)
+echo "=> Update backend to version $BACKEND_VERSION..."
+(mkdir -p $BACKEND_DIR && cd $BACKEND_DIR && wget -cq https://github.com/$BACKEND_REPO/releases/latest/download/dist.tar.gz -O - | tar -xz)
+
+FRONTEND_REPO=SlvCtrlPlus/slvctrlplus-frontend
+FRONTEND_DIR=/usr/share/slvctrlplus-frontend
+FRONTEND_VERSION=$(get_latest_release $FRONTEND_REPO)
+echo "=> Update frontend to version $FRONTEND_VERSION..."
+(mkdir -p $FRONTEND_DIR && cd $FRONTEND_DIR && wget -cq https://github.com/$FRONTEND_REPO/releases/latest/download/dist.tar.gz -O - | tar -xz)
 
 echo "=> Restart server..."
 pm2 restart slvctrlplus-server
