@@ -10,7 +10,7 @@ Contains documentation for SlvCtrl+
 |------|-------------|--------|
 | 2b | This component makes an E-Stim Systems 2B e-stim device controllable. | :x: pending |
 | air valve | This component can control the air flow of any NATO compatible gas mask. | :white_check_mark: [Repository](https://github.com/SlvCtrlPlus/slvctrl-airvalve) |
-| dimmer | This component can dim any 110/220V consumer. | :construction_worker: under development |
+| dimmer | This component can dim any 110/220V consumer. | :construction_worker: [Repository](https://github.com/SlvCtrlPlus/slvctrl-dimmer) |
 | distance | This component measures the distance to an object. | :white_check_mark: [Repository](https://github.com/SlvCtrlPlus/slvctrl-distance) |
 | et312 | This component makes an ET/MK-312 e-stim box controllable. | :white_check_mark: [Repository](https://github.com/SlvCtrlPlus/slvctrl-et312) |
 | plug | This component makes any pump plug controllable and provides readings of it's current pressure. | :construction_worker: under development |

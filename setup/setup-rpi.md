@@ -169,3 +169,7 @@ pm2 restart slvctrlplus-server
 
 echo "=> Done!"
 ```
+
+## Setup ad-hoc network mode
+If you want to use your SlvCtrl+ RPi when you're out and about, there's the possibility to create an ad-hoc network on the RPi to connect to it using a tablet 
+or phone without any intermediary router or internet connection. To do so, [there's a guide and script available here](https://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/183-raspberry-pi-automatic-hotspot-and-static-hotspot-installer).
