@@ -8,6 +8,8 @@ Install either the newest release of the [Intiface engine](https://github.com/in
 
 ## Add source to SlvCtrl+ config
 
+First make sure SlvCtrl+ server is not running.
+
 Add the source to your SlvCtrl+ config file (`~/.slvctrlplus/settings.json`) after any other configured source (i.e. `...` in below code snippet).
 
 ```json
@@ -22,3 +24,5 @@ Add the source to your SlvCtrl+ config file (`~/.slvctrlplus/settings.json`) aft
         }
     }
 ```
+
+Start SlvCtrl+ server. The new configuration should be picked up.
