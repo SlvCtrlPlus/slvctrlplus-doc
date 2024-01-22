@@ -2,7 +2,8 @@
 Contains documentation for SlvCtrl+
 
 ## Get up and running
-* [Raspberry Pi](./setup/setup-rpi.md)
+* [Setup on a Raspberry Pi](./setup/setup-rpi.md)
+* [Configure buttplug.io support](./setup/buttplug-io-support.md)
 
 ## Components
 
