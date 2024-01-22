@@ -4,7 +4,7 @@ Thanks to the work of @drone4770 SlvCtrl+ supports buttplug.io.
 
 ## Install Intiface engine
 
-Install either the newest release of the [Intiface engine](https://github.com/intiface/intiface-engine/releases/latest) if you're running SlvCtrl+ on a headless operating system or install [Intiface central](https://github.com/intiface/intiface-central/releases/latest) if you're on a operating system with a window manager.
+Install either the newest release of the [Intiface engine](https://github.com/intiface/intiface-engine/releases/latest) if you're running SlvCtrl+ on a headless operating system or install [Intiface central](https://github.com/intiface/intiface-central/releases/latest) if you're on an operating system with a window manager.
 
 ## Add source to SlvCtrl+ config
 
