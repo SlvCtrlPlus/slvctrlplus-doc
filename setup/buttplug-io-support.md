@@ -1,6 +1,6 @@
 # Connecting Buttplug.io to SlvCtrl+
 
-Thanks to the work of @drone4770 SlvCtrl+ supports buttplug.io.
+Thanks to the work of [@drone4770](https://github.com/drone4770) SlvCtrl+ supports buttplug.io.
 
 ## Install Intiface engine
 
