@@ -105,6 +105,7 @@ module.exports = {
         script: "/usr/share/slvctrlplus-server/dist/index.js",
         env: {
           "PORT": 1337,
+          "LOG_LEVEL": "INFO",
         }
       }
   ]
