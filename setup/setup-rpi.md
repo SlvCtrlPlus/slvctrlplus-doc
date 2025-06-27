@@ -9,6 +9,7 @@ $ source ~/.bashrc
 $ nvm install 18 && nvm alias default node && nvm use 18
 $ npm install --global yarn
 $ yarn global add pm2
+$ sudo adduser --system --group --home /home/slvctrlplus slvctrlplus # creates the user to run the server, if it doesn't already exist
 ```
 
 Make sure Serial Port is enabled:
@@ -114,8 +115,11 @@ module.exports = {
 
 Set pm2 to start on boot:
 ```bash
-$ sudo pm2 startup
-$ sudo pm2 start /etc/pm2/apps.config.js
+$ sudo -i -u slvctrlplus
+$ pm2 startup systemd -u slvctrlplus --hp /home/slvctrlplus
+$ # execute printed command from above
+$ pm2 start /etc/pm2/apps.config.js
+$ pm2 save
 ```
 
 ## Update script
@@ -127,6 +131,8 @@ This update to the latest release using the prebuilt versions.
 
 ```bash
 #!/bin/bash
+
+sudo -i -u slvctrlplus
 
 get_latest_release() {
   curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
@@ -158,6 +164,8 @@ All manual changes that were made will be reset by this script.
 
 ```bash
 #!/bin/bash
+
+sudo -i -u slvctrlplus
 
 echo "=> Update backend..."
 (cd /usr/share/slvctrlplus-server && git reset --hard && git pull && rm -rf node_module/ && yarn install && tsc)
