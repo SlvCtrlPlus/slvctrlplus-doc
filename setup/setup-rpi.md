@@ -132,8 +132,6 @@ This update to the latest release using the prebuilt versions.
 ```bash
 #!/bin/bash
 
-sudo -i -u slvctrlplus
-
 get_latest_release() {
   curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
     grep '"tag_name":' |                                            # Get tag line
@@ -164,8 +162,6 @@ All manual changes that were made will be reset by this script.
 
 ```bash
 #!/bin/bash
-
-sudo -i -u slvctrlplus
 
 echo "=> Update backend..."
 (cd /usr/share/slvctrlplus-server && git reset --hard && git pull && rm -rf node_module/ && yarn install && tsc)
