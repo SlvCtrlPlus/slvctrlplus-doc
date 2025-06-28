@@ -6,7 +6,7 @@ $ sudo apt-get update && apt-get upgrade
 $ sudo apt-get install nginx git
 $ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
 $ source ~/.bashrc
-$ nvm install 18 && nvm alias default node && nvm use 18
+$ nvm install 22 && nvm alias default node && nvm use 22
 $ npm install --global yarn
 $ yarn global add pm2
 $ sudo adduser --system --group --home /home/slvctrlplus slvctrlplus # creates the user to run the server, if it doesn't already exist
@@ -29,7 +29,7 @@ sudo echo "dtoverlay=disable-bt" >> /boot/config.txt
 
 ## Option 1: Use prebuilt version (recommended)
 ```bash
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo "=> Install backend..."
 (DIR=/usr/share/slvctrlplus-server && mkdir -p $DIR && cd $DIR && wget -cq https://github.com/SlvCtrlPlus/slvctrlplus-server/releases/latest/download/dist.tar.gz -O - | tar -xz)
@@ -130,7 +130,7 @@ command `./update-slvctrlplus.sh`.
 This update to the latest release using the prebuilt versions.
 
 ```bash
-#!/bin/bash
+#!/usr/bin/env bash
 
 get_latest_release() {
   curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
@@ -161,7 +161,7 @@ This is a script that can be run to update server and frontend component once th
 All manual changes that were made will be reset by this script.
 
 ```bash
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo "=> Update backend..."
 (cd /usr/share/slvctrlplus-server && git reset --hard && git pull && rm -rf node_module/ && yarn install && tsc)
