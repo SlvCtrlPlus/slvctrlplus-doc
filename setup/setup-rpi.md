@@ -124,7 +124,7 @@ $ pm2 save
 
 ## Update script
 These are pre-baked scripts you can save into your home directory as `update-slvctrlplus.sh` and run them with the 
-command `sudo  ./update-slvctrlplus.sh`.
+command `./update-slvctrlplus.sh`.
 
 ### Option 1: Prebuilt version
 This update to the latest release using the prebuilt versions.
@@ -176,7 +176,10 @@ echo "=> Done!"
 ```
 
 ### Update pm2
-```
+To update pm2, just create this script as `update-pm2.sh` in your home directory and then run it with the 
+command `./update-pm2.sh`.
+
+```bash
 #!/usr/bin/env bash
 
 npm install pm2 -g
