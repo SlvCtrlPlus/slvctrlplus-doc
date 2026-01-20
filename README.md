@@ -1,16 +1,18 @@
 # doc
-Contains documentation for SlvCtrl+
+Official documentation for SlvCtrl+.
 
 ## Get up and running
 * [Setup on a Raspberry Pi](./setup/setup-rpi.md)
-* [Configure buttplug.io support](./setup/buttplug-io-support.md)
 
-## Components
+## Device support overview
+
+For more details and how to setup the devices listed below, visit the dedicated [device support page](./setup/device-support.md).
 
 | Name | Description | Status |
 |------|-------------|--------|
-| 2b | Makes an E-Stim Systems 2B e-stim device controllable. | :x: pending |
+| 2b | Makes an E-Stim Systems 2B e-stim device controllable. | :white_check_mark: |
 | air valve | Controls the air flow of any NATO compatible gas mask. | :white_check_mark: [Repository](https://github.com/SlvCtrlPlus/slvctrl-airvalve) |
+| buttplug.io | Maks any buttplug.io connected device controllable. | :white_check_mark: |
 | dimmer | Dims any 110/220V consumer. | :white_check_mark: [Repository](https://github.com/SlvCtrlPlus/slvctrl-dimmer) |
 | display | Visualizes things. | :construction_worker: [Repository](https://github.com/SlvCtrlPlus/slvctrl-display) |
 | distance | Measures the distance to an object. | :white_check_mark: [Repository](https://github.com/SlvCtrlPlus/slvctrl-distance) |
@@ -19,6 +21,7 @@ Contains documentation for SlvCtrl+
 | plug | Makes any pump plug controllable and provides readings of it's current pressure. | :construction_worker: under development |
 | striker mk2 | Makes StyleFetish's Striker MK2 controllable. | :white_check_mark: [Repository](https://github.com/SlvCtrlPlus/slvctrl-strikermk2) |
 | venus 2000 | Makes Sybian's Venus 2000 controllable. | :construction_worker: under development |
+| zc95 | Makes [CrashOverride85's ZC95](https://github.com/CrashOverride85/zc95) estim device controllable. | :white_check_mark: |
 
 ## Automation
 * [Scripting](./automation/scripting.md)
