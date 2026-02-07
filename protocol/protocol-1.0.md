@@ -23,6 +23,8 @@ in the response:
 set flow 50 100;status:ok
 ```
 
+If required arguments are missing, the response MUST echo the command and any arguments that were provided.
+
 #### Possible values for `status` information
 | State  | Description |
 |--------|-------------|
@@ -88,7 +90,7 @@ attributes;flow:rw[int(0..100)],pressure:ro[int(10..20)];status:ok
 | Float   | A float | `float` |
 | Boolean | A boolean | `bool` |
 | List    | A list of options (of any other data type) | <code>foo&#124;bar&#124;baz</code> or <code>8&#124;16&#124;32&#124;64</code> |
-| Range   | A range | `int/0..100` (of either integer or float) |
+| Range   | A range | `int(0..100)` (of either integer or float) |
 
 ### Command `status`
 Returns the current status of the component. It MUST return a comma separated list with all attributes and their values.
@@ -150,9 +152,9 @@ get flow;value:;status:unknown;reason:in_motion
 --> introduce\n
 <-- introduce;type:air_valve,fw:10223,protocol:10000;status:ok\n
 --> attributes
-<-- attributes;flow:rw[int/0..100],pressure:ro[int/10..20];status:ok
+<-- attributes;flow:rw[int(0..100)],pressure:ro[int(10..20)];status:ok
 --> status\n
-<-- status;flow:100;status:ok\n
+<-- status;flow:100,pressure:10;status:ok\n
 --> set flow 50\n
 <-- set flow 50;status:error;reason:value_out_of_range\n
 --> set flow 50\n
