@@ -20,14 +20,14 @@ arguments and additional information segments separated by `;` (semicolons). The
 in the response:
 
 ```
-set flow 50 100;status:successful
+set flow 50 100;status:ok
 ```
 
 #### Possible values for `status` information
 | State  | Description |
 |--------|-------------|
-| `successful` | Command processed successfully |
-| `failed`     | The command was not processed successfully by the device |
+| `ok` | Command processed successfully |
+| `error`     | The command was not processed successfully by the device |
 | `unknown`    | Currently it's unknown whether processin the command was successful or not |
 
 ## Commands
@@ -42,12 +42,12 @@ No parameters
 
 #### Response
 ```
-introduce;{device type: string},{firmware version: int},{protocol version: int};status:successful
+introduce;type:{device type: string},fw:{firmware version: int},protocol:{protocol version: int};status:ok
 ```
 
 Example: 
 ```
-introduce;air_valve,110223,10000;status:successful
+introduce;air_valve,110223,10000;status:ok
 ```
 
 The number `110223` MUST be read as `11.2.23`.
@@ -58,18 +58,19 @@ Returns a list of attributes this component offers for read and/or write.
 
 The attribute names MUST only contain lower and upper case letters (`A-Za-z`), numbers (`0-9`), dashes (`-`) 
 and underscores (`_`) and MUST have at least the length of 1 (`^[A-Za-z0-9_-]+$`).
+The name `status` MUST NOT be used for an attribute and is a reserved keyword.
 
 ### Request
 No parameters
 
 ### Response
 ```
-attributes[;attributes:{attribute 1}:{{attribute type}}[{data type}]},...];status:successful
+attributes[;{attribute name}:{attribute type}[{data type}],...];status:ok
 ```
 
 Example:
 ```
-attributes;attributes:flow:rw[int/0..100],pressure:ro[int/10..20];status:successful
+attributes;flow:rw[int(0..100)],pressure:ro[int(10..20)];status:ok
 ```
 
 #### Attribute types
@@ -98,17 +99,17 @@ No parameters
 
 #### Response
 ```
-status[;{attribute name 1}:{value 1},{attribute name 2}:{value 2},...];status:successful
+status[;{attribute name 1}:{value 1},{attribute name 2}:{value 2},...];status:ok
 ```
 
 Example:
 ```
-status;flow:55,pressure:10;status:successful
+status;flow:55,pressure:10;status:ok
 ```
 
 Example in case value cannot be determined at the moment:
 ```
-status;flow:,pressure:10;status:successful
+status;flow:,pressure:10;status:ok
 ```
 
 Write-only attributes MUST be omitted in the status response.
@@ -123,9 +124,9 @@ The first paramter MUST be the attribute name for both, `get` and `set` commands
 The second parameter MUST be the attribute value to be set in case of a `set` command.
 
 The response of a set command MUST always contain the command name plus all its parameters with an additional 
-property/value list which MUST contain at least a `status` about the outcome of the set command: `set flow 20;status:successful`.
+property/value list which MUST contain at least a `status` about the outcome of the set command: `set flow 20;status:ok`.
 
-If state is `failed` or `unknown` an additional `reason` field MAY bet set with more detailed information (error code, etc).
+If state is `error` or `unknown` an additional `reason` field MAY bet set with more detailed information (error code, etc).
 
 #### Response
 The response of a `get` command MUST return the complete command as sent (including the attribute name).
@@ -133,7 +134,7 @@ If the value cannot be determined the value list MUST be empty.
 
 Example in case of success:
 ```
-get flow;value:50;status:successful
+get flow;value:50;status:ok
 ```
 
 Example if value cannot be determined at the moment:
@@ -147,15 +148,15 @@ get flow;value:;status:unknown;reason:in_motion
 
 ```
 --> introduce\n
-<-- introduce;air_valve,10223,10000;status:successful\n
+<-- introduce;air_valve,10223,10000;status:ok\n
 --> attributes
-<-- attributes;attributes:flow:rw[int/0..100],pressure:ro[int/10..20];status:successful
+<-- attributes;attributes:flow:rw[int/0..100],pressure:ro[int/10..20];status:ok
 --> status\n
-<-- status;flow:100;status:successful\n
+<-- status;flow:100;status:ok\n
 --> set flow 50\n
-<-- set flow 50;status:failed;reason:value_out_of_range\n
+<-- set flow 50;status:error;reason:value_out_of_range\n
 --> set flow 50\n
-<-- set flow 50;status:successful\n
+<-- set flow 50;status:ok\n
 --> get flow\n
-<-- get flow;value:50;status:successful\n
+<-- get flow;value:50;status:ok\n
 ```
