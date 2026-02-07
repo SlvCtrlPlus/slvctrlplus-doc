@@ -10,12 +10,31 @@ The commands and their responses always MUST be separated by a new line (`\n`).
 ### Parameter separation
 A command's parameters MUST be separated by a space:
 ```
-set-flow 50 100
+set flow 50 100
+```
+In the example above the command is `set` with three arguments: `flow`, `50` and `100`.
+
+### Command response
+If a command is sent, a response MUST be sent back. It MUST include the original command and all its
+arguments and additional information segments separated by `;` (semicolons). The `status` information MUST always be included 
+in the response:
+
+```
+set flow 50 100;status:successful
 ```
 
+#### Possible values for `status` information
+| State  | Description |
+|--------|-------------|
+| `successful` | Command processed successfully |
+| `failed`     | The command was not processed successfully by the device |
+| `unknown`    | Currently it's unknown whether processin the command was successful or not |
+
 ## Commands
+The following described minimum set of commands MUST be implemented.
+
 ### Command `introduce`
-This is the first command the server sends to the component once it established a successful serial connection.
+This is the first command the server sends to the component once it established a successful connection.
 The component MUST answer this command with some basic information about itself. (See *Response* section)
 
 #### Request
@@ -23,34 +42,34 @@ No parameters
 
 #### Response
 ```
-introduce;{device type: string},{firmware version: int},{protocol version: int}
+introduce;{device type: string},{firmware version: int},{protocol version: int};status:successful
 ```
 
 Example: 
 ```
-introduce;air_valve,10223,10000
+introduce;air_valve,110223,10000;status:successful
 ```
 
-The number `10223` MUST be read as `1.2.23`.
+The number `110223` MUST be read as `11.2.23`.
 The number `10000` MUST be read as `1.0.0`.
 
 ### Command `attributes`
 Returns a list of attributes this component offers for read and/or write.
 
-The attribute names MUST only contain lower case letters a-z, numbers and dashes and MUST have at least the length
-of 1 (`^[a-z0-9-]+$`).
+The attribute names MUST only contain lower and upper case letters (`A-Za-z`), numbers (`0-9`), dashes (`-`) 
+and underscores (`_`) and MUST have at least the length of 1 (`^[A-Za-z0-9_-]+$`).
 
 ### Request
 No parameters
 
 ### Response
 ```
-attributes[;{attribute 1}:{{attribute type}}[{data type}]},...]
+attributes[;attributes:{attribute 1}:{{attribute type}}[{data type}]},...];status:successful
 ```
 
 Example:
 ```
-attributes;flow:rw[0-100],pressure:ro[10-20]
+attributes;attributes:flow:rw[int/0..100],pressure:ro[int/10..20];status:successful
 ```
 
 #### Attribute types
@@ -68,61 +87,58 @@ attributes;flow:rw[0-100],pressure:ro[10-20]
 | Float   | A float | `float` |
 | Boolean | A boolean | `bool` |
 | List    | A list of options (of any other data type) | <code>foo&#124;bar&#124;baz</code> or <code>8&#124;16&#124;32&#124;64</code> |
-| Range   | A range | `0-100` (of either integer or float) |
+| Range   | A range | `int/0..100` (of either integer or float) |
 
 ### Command `status`
 Returns the current status of the component. It MUST return a comma separated list with all attributes and their values.
-If a value cannot be determined at the moment it MUST be omitted.
+If a value cannot be determined, the value MUST be empty.
 
 #### Request
 No parameters
 
 #### Response
 ```
-status[;{attribute name 1}:{value 1},{attribute name 2}:{value 2},...]
+status[;{attribute name 1}:{value 1},{attribute name 2}:{value 2},...];status:successful
 ```
 
 Example:
 ```
-status;flow:55
+status;flow:55,pressure:10;status:successful
 ```
 
 Example in case value cannot be determined at the moment:
 ```
-status;flow:
+status;flow:,pressure:10;status:successful
 ```
 
-### Attribute commands `get-...` and `set-...`
+Write-only attributes MUST be omitted in the status response.
+
+### Attribute commands `get ...` and `set ...`
 The component MUST implement a command to get a value and/or write a value for each attribute.
 
-The command names MUST either start with `get-` or `set-` depending on whether they read or write the attribute.
+The command name MUST be `get` or `set` depending on whether they read or write the attribute.
 
-Parameters MUST be provided as a space separated list: `set-flow 20`.
+The `get` MUST accept exactly one parameter and the `set` commands MUST accept exactly two parameters.
+The first paramter MUST be the attribute name for both, `get` and `set` commands. 
+The second parameter MUST be the attribute value to be set in case of a `set` command.
 
 The response of a set command MUST always contain the command name plus all its parameters with an additional 
-property/value list which has to at least contain a `status` about the set command: `set-flow;20;status:successful`.
+property/value list which MUST contain at least a `status` about the outcome of the set command: `set flow 20;status:successful`.
 
-#### Possible states
-| State  | Description |
-|--------|-------------|
-| `successful` | Value was set successfully |
-| `failed`     | Setting the value failed |
-| `unknown`    | Currently it's unknown whether setting the value was successful or not |
-
-If state is `failed` or `unknown` an additional `reason` field MAY bet set with more detailed info (error code, etc).
+If state is `failed` or `unknown` an additional `reason` field MAY bet set with more detailed information (error code, etc).
 
 #### Response
-The response of a get command MUST return the command name and the current value. If there are multiple values they
-MUST be separated by a comma. If the value cannot be determined the value list MUST be empty.
+The response of a `get` command MUST return the complete command as sent (including the attribute name).
+If the value cannot be determined the value list MUST be empty.
 
 Example in case of success:
 ```
-get-flow;50;status:success
+get flow;value:50;status:successful
 ```
 
 Example if value cannot be determined at the moment:
 ```
-get-flow;;status:unknown,reason:in_motion
+get flow;value:;status:unknown;reason:in_motion
 ```
 
 ## Complete example
@@ -131,15 +147,15 @@ get-flow;;status:unknown,reason:in_motion
 
 ```
 --> introduce\n
-<-- introduce;air_valve,10223,1\n
+<-- introduce;air_valve,10223,10000;status:successful\n
 --> attributes
-<-- attributes;flow:rw[0-100],pressure:ro[10-20]
+<-- attributes;attributes:flow:rw[int/0..100],pressure:ro[int/10..20];status:successful
 --> status\n
-<-- status;flow:100\n
---> set-flow 50\n
-<-- set-flow;300;status:failed,reason:value_out_of_range\n
---> set-flow 50\n
-<-- set-flow;50;status:successful\n
---> get-flow\n
-<-- get-flow;50\n
+<-- status;flow:100;status:successful\n
+--> set flow 50\n
+<-- set flow 50;status:failed;reason:value_out_of_range\n
+--> set flow 50\n
+<-- set flow 50;status:successful\n
+--> get flow\n
+<-- get flow;value:50;status:successful\n
 ```
