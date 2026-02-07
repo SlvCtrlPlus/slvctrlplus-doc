@@ -47,7 +47,7 @@ introduce;type:{device type: string},fw:{firmware version: int},protocol:{protoc
 
 Example: 
 ```
-introduce;air_valve,110223,10000;status:ok
+introduce;type:air_valve,fw:110223,protocol:10000;status:ok
 ```
 
 The number `110223` MUST be read as `11.2.23`.
@@ -148,9 +148,9 @@ get flow;value:;status:unknown;reason:in_motion
 
 ```
 --> introduce\n
-<-- introduce;air_valve,10223,10000;status:ok\n
+<-- introduce;type:air_valve,fw:10223,protocol:10000;status:ok\n
 --> attributes
-<-- attributes;attributes:flow:rw[int/0..100],pressure:ro[int/10..20];status:ok
+<-- attributes;flow:rw[int/0..100],pressure:ro[int/10..20];status:ok
 --> status\n
 <-- status;flow:100;status:ok\n
 --> set flow 50\n
