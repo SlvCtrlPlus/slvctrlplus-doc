@@ -15,22 +15,36 @@ set flow 50 100
 In the example above the command is `set` with three arguments: `flow`, `50` and `100`.
 
 ### Command response
-If a command is sent, a response MUST be sent back. It MUST include the original command and all its
-arguments and additional information segments separated by `;` (semicolons). The `status` information MUST always be included 
-in the response:
+If a command is sent, a response MUST be sent back. It MUST contain exactly 3 segments separated by `;` semicolons
+and terminated by `\n` (new line):
 
 ```
-set flow 50 100;status:ok
+<echoed command>;<info>;<outcome>\n
 ```
 
-If required arguments are missing, the response MUST echo the command and any arguments that were provided.
+The first segment MUST include the original command and all its arguments. If required arguments are missing, 
+the response MUST echo the command and any arguments that were provided.
+The second segment MAY include additional information. It MAY also be empty.
+The third segment MUST include the outcome of the command. It MUST always have at least a `status` information. In
+the case of `status:error` it SHOULD contain a `reason` information as well. Additional information MAY be added
+to the outcome segment.
+
+Multiple key-value pairs (`key:value`) in a segment MUST be separated by `,` (comma):
+
+```
+get pressure;value:50;status:ok
+get pressure;value:;status:error,reason:pressure_not_available
+set flow 50 100;;status:ok
+set flow 50 100;;status:error,reason:value1_out_of_range
+status;flow:50,pressure:100;status:ok
+```
 
 #### Possible values for `status` information
 | State  | Description |
 |--------|-------------|
 | `ok` | Command processed successfully |
 | `error`     | The command was not processed successfully by the device |
-| `unknown`    | Currently it's unknown whether processin the command was successful or not |
+| `unknown`    | Currently it's unknown whether processing the command was successful or not |
 
 ## Commands
 The following described minimum set of commands MUST be implemented.
@@ -122,13 +136,13 @@ The component MUST implement a command to get a value and/or write a value for e
 The command name MUST be `get` or `set` depending on whether they read or write the attribute.
 
 The `get` MUST accept exactly one parameter and the `set` commands MUST accept exactly two parameters.
-The first paramter MUST be the attribute name for both, `get` and `set` commands. 
+The first parameter MUST be the attribute name for both, `get` and `set` commands. 
 The second parameter MUST be the attribute value to be set in case of a `set` command.
 
 The response of a set command MUST always contain the command name plus all its parameters with an additional 
-property/value list which MUST contain at least a `status` about the outcome of the set command: `set flow 20;status:ok`.
+property/value list which MUST contain at least a `status` about the outcome of the set command: `set flow 20;;status:ok`.
 
-If state is `error` or `unknown` an additional `reason` field MAY bet set with more detailed information (error code, etc).
+If state is `error` or `unknown` an additional `reason` field MAY be set with more detailed information (error code, etc).
 
 #### Response
 The response of a `get` command MUST return the complete command as sent (including the attribute name).
@@ -141,7 +155,7 @@ get flow;value:50;status:ok
 
 Example if value cannot be determined at the moment:
 ```
-get flow;value:;status:unknown;reason:in_motion
+get flow;value:;status:unknown,reason:in_motion
 ```
 
 ## Complete example
@@ -150,15 +164,15 @@ get flow;value:;status:unknown;reason:in_motion
 
 ```
 --> introduce\n
-<-- introduce;type:air_valve,fw:10223,protocol:10000;status:ok\n
---> attributes
-<-- attributes;flow:rw[int(0..100)],pressure:ro[int(10..20)];status:ok
+<-- introduce;type:air_valve,fw:110223,protocol:10000;status:ok\n
+--> attributes\n
+<-- attributes;flow:rw[int(0..100)],pressure:ro[int(10..20)];status:ok\n
 --> status\n
 <-- status;flow:100,pressure:10;status:ok\n
 --> set flow 50\n
-<-- set flow 50;status:error;reason:value_out_of_range\n
+<-- set flow 50;status:error,reason:value_out_of_range\n
 --> set flow 50\n
-<-- set flow 50;status:ok\n
+<-- set flow 50;;status:ok\n
 --> get flow\n
 <-- get flow;value:50;status:ok\n
 ```
