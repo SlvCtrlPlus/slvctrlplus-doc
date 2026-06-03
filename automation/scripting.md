@@ -21,7 +21,9 @@ The script has three hooks:
 | `onStart(async () => {})` | Executed once at automation script start |
 | `onStop(async () => {})` | Executed once at automation script stop |
 
-## onEvent
+## onEvent's event.type
+
+The value of `event.type` can be one of these:
 
 * `deviceRefreshed`: New data has been pulled from a device
 * `deviceConnected`: A new device was connected
