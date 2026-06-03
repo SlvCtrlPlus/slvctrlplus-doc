@@ -56,14 +56,14 @@ onStop(async () => console.log('script stopped'));
 ```
 
 ### Event selection
-This script logs the string "deviceUpdateReceived" everytime a `deviceUpdateReceived` event gets fired for any device.
+This script logs the string "deviceRefreshed" everytime a `deviceRefreshed` event gets fired for any device.
 ```javascript
 onEvent(async (event) => {
-    if ("deviceUpdateReceived" !== event.type) {
+    if ('deviceRefreshed' !== event.type) {
         return;
     }
 
-    console.log("deviceUpdateReceived");
+    console.log('deviceRefreshed');
 });
 ```
 
@@ -72,11 +72,11 @@ This script logs the string "this is the device you are looking for" everytime a
 the id "filtered-device-uuid".
 ```javascript
 onEvent(async (event) => {
-    if ("filtered-device-uuid" !== event.device.getDeviceId) {
+    if ('filtered-device-uuid' !== event.device.getDeviceId) {
         return;
     }
 
-    console.warn("this is the device you are looking for");
+    console.warn('this is the device you are looking for');
 });
 ```
 
@@ -85,13 +85,13 @@ This script logs the string "Example attribute's value is: ..." everytime an eve
 the id "filtered-device-uuid" and the value "new value" is written to the `example` attribute of the device.
 ```javascript
 onEvent(async (event) => {
-    if ("filtered-device-uuid" !== event.device.getDeviceId) {
+    if ('filtered-device-uuid' !== event.device.getDeviceId) {
         return;
     }
 
     const exampleAttribute = await event.device.getAttribute('example');
 
-    console.log("Example attribute's value is: " + exampleAttribute);
+    console.log('Example attribute's value is: ' + exampleAttribute);
 
     try {
         await event.device.setAttribute('example', 'new value');
