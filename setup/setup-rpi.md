@@ -3,12 +3,11 @@
 ## Prepare the system
 ```bash
 $ sudo apt-get update && apt-get upgrade
-$ sudo apt-get install nginx git
+$ sudo apt-get install nginx git ssl-cert
 $ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
 $ source ~/.bashrc
-$ nvm install 22 && nvm alias default node && nvm use 22
-$ npm install --global yarn
-$ yarn global add pm2
+$ nvm install 24 && nvm alias default node && nvm use 24
+$ npm install --global pm2
 $ sudo adduser --system --group --home /home/slvctrlplus slvctrlplus # creates the user to run the server, if it doesn't already exist
 ```
 
@@ -73,6 +72,13 @@ server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
 
+  # Optional for HTTPS: Start SSL configuration
+	listen 443 ssl default_server;
+	listen [::]:443 ssl default_server;
+	
+	include snippets/snakeoil.conf;
+  # Optional for HTTPS: End SSL configuration
+
 	root /usr/share/slvctrlplus-frontend/dist/;
 
 	# Add index.php to the list if you are using PHP
@@ -106,11 +112,37 @@ module.exports = {
         script: "/usr/share/slvctrlplus-server/dist/index.js",
         env: {
           "PORT": 1337,
-          "LOG_LEVEL": "info",
+          "LOG_LEVEL": "info"
         }
       }
   ]
 }
+```
+
+or if you want to support HTTPS:
+
+```js
+module.exports = {
+  apps : [
+      {
+        name: "slvctrlplus-server",
+        script: "/usr/share/slvctrlplus-server/dist/index.js",
+        env: {
+          "PORT": 1337,
+          "LOG_LEVEL": "info",
+          "HTTPS_PORT": 1338,
+          "SSL_CERT": "/etc/ssl/certs/ssl-cert-snakeoil.pem",
+          "SSL_KEY": "/etc/ssl/private/ssl-cert-snakeoil.key"
+        }
+      }
+  ]
+}
+```
+
+**Important**: Add the user under which pm2 is running to the ssl-cert group, else you will get permission errors:
+
+```bash
+sudo usermod -aG ssl-cert slvctrlplus
 ```
 
 Set pm2 to start on boot:
