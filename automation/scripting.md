@@ -17,17 +17,12 @@ The script has three hooks:
 
 |  Hook     | Description |
 |-----------|-------------|
-| `onEvent(async (event) => {})` | Executed for every event listed below. |
+| `onEvent('deviceConnected', async (device) => {})` | Executed every time a new device was connected. |
+| `onEvent('deviceDisconnected', async (device) => {})` | Executed every time a device was disconnected. |
+| `onEvent('deviceRefreshed', async (device) => {})` | Executed every time new data has been pulled from a device. |
+| `onEvent('deviceNotification', async (device, notificationData) => {})` | Executed every time a device sends a notification. |
 | `onStart(async () => {})` | Executed once at automation script start |
 | `onStop(async () => {})` | Executed once at automation script stop |
-
-## onEvent's event.type
-
-The value of `event.type` can be one of these:
-
-* `deviceRefreshed`: New data has been pulled from a device
-* `deviceConnected`: A new device was connected
-* `deviceDisconnected`: A device was disconnected
 
 ### Available variables
 
@@ -41,7 +36,7 @@ The value of `event.type` can be one of these:
 
 |  Variable | Description |
 |-----------|-------------|
-| `event` | Provides information about the event that triggered the script execution. `event.type` contains the name of the event and `event.device` contains the device instance that triggered the event. |
+| `device` | Hold a reference to the device instance that triggered the event. |
 
 ## Examples
 
@@ -58,21 +53,17 @@ onStop(async () => console.log('script stopped'));
 ### Event selection
 This script logs the string "deviceRefreshed" everytime a `deviceRefreshed` event gets fired for any device.
 ```javascript
-onEvent(async (event) => {
-    if ('deviceRefreshed' !== event.type) {
-        return;
-    }
-
+onEvent('deviceRefreshed', async (event) => {
     console.log('deviceRefreshed');
 });
 ```
 
 ### Device selection
-This script logs the string "this is the device you are looking for" everytime an event gets fired for the device with 
-the id "filtered-device-uuid".
+This script logs the string "this is the device you are looking for" everytime a `deviceRefreshed` event gets fired for the device with 
+the id `filtered-device-uuid`.
 ```javascript
-onEvent(async (event) => {
-    if ('filtered-device-uuid' !== event.device.getDeviceId) {
+onEvent('deviceRefreshed', async (device) => {
+    if ('filtered-device-uuid' !== device.getDeviceId) {
         return;
     }
 
@@ -81,20 +72,20 @@ onEvent(async (event) => {
 ```
 
 ### Write/access attribute of a device
-This script logs the string "Example attribute's value is: ..." everytime an event gets fired for the device with
-the id "filtered-device-uuid" and the value "new value" is written to the `example` attribute of the device.
+This script logs the string "Example attribute's value is: ..." everytime a `deviceRefreshed` event gets fired for the device with
+the id `filtered-device-uuid` and the value "new value" is written to the `example` attribute of the device.
 ```javascript
-onEvent(async (event) => {
-    if ('filtered-device-uuid' !== event.device.getDeviceId) {
+onEvent('deviceRefreshed', async (device) => {
+    if ('filtered-device-uuid' !== device.getDeviceId) {
         return;
     }
 
     const exampleAttribute = await event.device.getAttribute('example');
 
-    console.log('Example attribute's value is: ' + exampleAttribute);
+    console.log(`Example attribute's value is: ${exampleAttribute}`);
 
     try {
-        await event.device.setAttribute('example', 'new value');
+        await device.setAttribute('example', 'new value');
     } catch(e) {
         console.error(e);
     }
