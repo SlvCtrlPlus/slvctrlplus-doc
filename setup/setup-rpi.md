@@ -1,20 +1,21 @@
 # Setting up SlvCtrl+ on a Raspberry Pi
 
+## tl;dr
+This will prepare your debian based system and install slvctrlplus in one go:
+```bash
+curl -fsSL https://raw.githubusercontent.com/SlvCtrlPlus/slvctrlplus-doc/main/setup/install-rpi.sh | sudo bash
+```
+
 ## Prepare the system
 ```bash
-$ sudo apt-get update && apt-get upgrade
-$ sudo apt-get install nginx git ssl-cert
-$ curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
-$ source ~/.bashrc
-$ nvm install 24 && nvm alias default node && nvm use 24
-$ npm install --global pm2
-$ sudo adduser --system --group --home /home/slvctrlplus slvctrlplus # creates the user to run the server, if it doesn't already exist
+sudo apt-get update && apt-get upgrade
+sudo apt-get install nginx git ssl-cert
 ```
 
 Make sure Serial Port is enabled:
 
 ```bash
-$ sudo raspi-config
+sudo raspi-config
 ```
 
 Select `3 Interface Options`, then `I6 Serial Port` and make sure to enable it (`Yes`).
@@ -23,7 +24,7 @@ Select `3 Interface Options`, then `I6 Serial Port` and make sure to enable it (
 It can be that SlvCtrl+ has a memory leak. This is caused by the Serialport library used for the communication with the components on certain Raspberry Pi models. To prevent the memory leak, Bluetooth needs to be disabled on the Raspberry Pi:
 
 ```bash
-sudo echo "dtoverlay=disable-bt" >> /boot/config.txt
+echo "dtoverlay=disable-bt" | sudo tee -a /boot/config.txt
 ```
 
 ## Option 1: Use prebuilt version (recommended)
@@ -43,26 +44,26 @@ echo "=> Done!"
 ## Option 2: Build from source
 ### Download source code
 ```bash
-$ sudo git clone https://github.com/SlvCtrlPlus/slvctrlplus-frontend.git /usr/share
-$ sudo git clone https://github.com/SlvCtrlPlus/slvctrlplus-server.git /usr/share
-$ # Optional: Switch to the branch you want to use
+sudo git clone https://github.com/SlvCtrlPlus/slvctrlplus-frontend.git /usr/share
+sudo git clone https://github.com/SlvCtrlPlus/slvctrlplus-server.git /usr/share
+# Optional: Switch to the branch you want to use
 ```
 
 ### Transpile server
 ```bash
-$ cd /usr/share/slvctrlplus-server
-$ sudo tsc
+cd /usr/share/slvctrlplus-server
+sudo tsc
 ```
 
 ### Transpile frontend
 ```bash
-$ cd /usr/share/slvctrlplus-frontend
-$ sudo yarn install && yarn run build
+cd /usr/share/slvctrlplus-frontend
+sudo yarn install && yarn run build
 ```
 
 ## Setup nginx
 ```bash
-$ sudo vim /etc/nginx/sites-available/default
+sudo vim /etc/nginx/sites-available/default
 ```
 
 File content:
@@ -99,8 +100,8 @@ server {
 Create the app config:
 
 ```bash
-$ sudo mkdir -p /etc/pm2
-$ sudo vim /etc/pm2/apps.config.js
+sudo mkdir -p /etc/pm2
+sudo vim /etc/pm2/apps.config.js
 ```
 
 Config file content:
@@ -139,19 +140,32 @@ module.exports = {
 }
 ```
 
-**Important**: Add the user under which pm2 is running to the ssl-cert group, else you will get permission errors:
-
+## Create user and install nvm and pm2
 ```bash
+sudo adduser --system --group --home /home/slvctrlplus slvctrlplus # creates the user to run the server, if it doesn't already exist
 sudo usermod -aG ssl-cert slvctrlplus
+sudo -i -u slvctrlplus
+curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash 
+source ~/.bashrc
+nvm install 24 && nvm alias default node && nvm use 24
+npm install --global pm2
 ```
 
 Set pm2 to start on boot:
 ```bash
-$ sudo -i -u slvctrlplus
-$ pm2 startup systemd -u slvctrlplus --hp /home/slvctrlplus
-$ # execute printed command from above
-$ pm2 start /etc/pm2/apps.config.js
-$ pm2 save
+pm2 startup systemd -u slvctrlplus --hp /home/slvctrlplus
+exit # back to admin
+# run the printed sudo command
+sudo -i -u slvctrlplus  # back to slvctrlplus
+pm2 start /etc/pm2/apps.config.js
+pm2 save
+```
+
+## Give the service user ownership of the app directories
+So the update scripts below can update the app without root:
+
+```bash
+sudo chown -R slvctrlplus:slvctrlplus /usr/share/slvctrlplus-server /usr/share/slvctrlplus-frontend
 ```
 
 ## Update script
